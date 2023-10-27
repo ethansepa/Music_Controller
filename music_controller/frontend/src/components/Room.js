@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
-import MusicPalyer from "./MusicPlayer";
+import MusicPlayer from "./MusicPlayer";
 
 export default class Room extends Component {
   constructor(props) {
@@ -15,18 +15,18 @@ export default class Room extends Component {
       song: {},
     };
     this.roomCode = this.props.match.params.roomCode;
-    this.getRoomDetails = this.getRoomDetails.bind(this);
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
     this.updateShowSettings = this.updateShowSettings.bind(this);
     this.renderSettingsButton = this.renderSettingsButton.bind(this);
     this.renderSettings = this.renderSettings.bind(this);
-    this.athenticateSpotify = this.athenticateSpotify.bind(this);
+    this.getRoomDetails = this.getRoomDetails.bind(this);
+    this.authenticateSpotify = this.authenticateSpotify.bind(this);
     this.getCurrentSong = this.getCurrentSong.bind(this);
     this.getRoomDetails();
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.getCurrentSong(), 1000); // 1000ms (1 second)
+    this.interval = setInterval(this.getCurrentSong, 1000);
   }
 
   componentWillUnmount() {
@@ -36,37 +36,38 @@ export default class Room extends Component {
   getRoomDetails() {
     return fetch("/api/get-room" + "?code=" + this.roomCode)
       .then((response) => {
-        if(!response.ok) {
+        if (!response.ok) {
           this.props.leaveRoomCallback();
           this.props.history.push("/");
         }
-        return response.json()
+        return response.json();
       })
       .then((data) => {
         this.setState({
           votesToSkip: data.votes_to_skip,
           guestCanPause: data.guest_can_pause,
-          isHost: data.is_host
+          isHost: data.is_host,
         });
         if (this.state.isHost) {
-          this.athenticateSpotify();
+          this.authenticateSpotify();
         }
       });
   }
 
-  athenticateSpotify() {
-    fetch('/spotify/is-authenticated')
+  authenticateSpotify() {
+    fetch("/spotify/is-authenticated")
       .then((response) => response.json())
       .then((data) => {
-      this.setState({spotifyAuthenticated: data.status});
-      if (!data.status) {
-        fetch('/spotify/get-auth-url')
-          .then((response) => response.json())
-          .then((data) => {
-            window.location.replace(data.url);
-          });
-      }
-    });
+        this.setState({ spotifyAuthenticated: data.status });
+        console.log(data.status);
+        if (!data.status) {
+          fetch("/spotify/get-auth-url")
+            .then((response) => response.json())
+            .then((data) => {
+              window.location.replace(data.url);
+            });
+        }
+      });
   }
 
   getCurrentSong() {
@@ -83,13 +84,13 @@ export default class Room extends Component {
         console.log(data);
       });
   }
-  
+
   leaveButtonPressed() {
     const requestOptions = {
       method: "POST",
-      headers: {"Contenet-Type" : "application/json"},
-    }
-    fetch("/api/leave-room", requestOptions).then((response) => {
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/api/leave-room", requestOptions).then((_response) => {
       this.props.leaveRoomCallback();
       this.props.history.push("/");
     });
@@ -101,39 +102,42 @@ export default class Room extends Component {
     });
   }
 
-  renderSettingsButton() {
+  renderSettings() {
     return (
-      <Grid item xs={12} align="center">
-        <Button variant="contained" color="primary" 
-          onClick={() => this.updateShowSettings(true)}>
-            Settings
-        </Button>
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <CreateRoomPage
+            update={true}
+            votesToSkip={this.state.votesToSkip}
+            guestCanPause={this.state.guestCanPause}
+            roomCode={this.roomCode}
+            updateCallback={this.getRoomDetails}
+          />
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.updateShowSettings(false)}
+          >
+            Close
+          </Button>
+        </Grid>
       </Grid>
     );
   }
 
-  renderSettings() {
+  renderSettingsButton() {
     return (
-    <Grid container spacing={1}>
-      <Grid item xs={12} align="center">
-        <CreateRoomPage
-          update={true}
-          votesToSkip={this.state.votesToSkip} 
-          guestCanPause={this.state.guestCanPause}
-          roomCode={this.roomCode}
-          updateCallback={this.getRoomDetails}
-        />
-      </Grid>
       <Grid item xs={12} align="center">
         <Button
           variant="contained"
-          color="secondary" 
-          onClick={() => this.updateShowSettings(false)}
-          >
-            Close
+          color="primary"
+          onClick={() => this.updateShowSettings(true)}
+        >
+          Settings
         </Button>
       </Grid>
-    </Grid>
     );
   }
 
@@ -148,11 +152,14 @@ export default class Room extends Component {
             Code: {this.roomCode}
           </Typography>
         </Grid>
-        <MusicPalyer {...this.state.song}/>
+        <MusicPlayer {...this.state.song} />
         {this.state.isHost ? this.renderSettingsButton() : null}
         <Grid item xs={12} align="center">
-          <Button variant="contained" color="secondary" 
-          onClick={this.leaveButtonPressed}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.leaveButtonPressed}
+          >
             Leave Room
           </Button>
         </Grid>
