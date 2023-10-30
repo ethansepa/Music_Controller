@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Grid, Button, Typography, Box } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
 
@@ -13,6 +13,7 @@ export default class Room extends Component {
       showSettings: false,
       spotifyAuthenticated: false,
       song: {},
+      image_url: "",
     };
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -59,7 +60,6 @@ export default class Room extends Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState({ spotifyAuthenticated: data.status });
-        console.log(data.status);
         if (!data.status) {
           fetch("/spotify/get-auth-url")
             .then((response) => response.json())
@@ -80,8 +80,8 @@ export default class Room extends Component {
         }
       })
       .then((data) => {
-        this.setState({ song: data });
-        console.log(data);
+        this.setState({ song: data});
+        this.setState({ image_url: data.image_url});
       });
   }
 
@@ -142,28 +142,38 @@ export default class Room extends Component {
   }
 
   render() {
+    const backgroundAlbum={
+      backgroundImage: `url('${this.state.image_url}')`,
+      backgroundSize: 'cover', 
+      backgroundPosition: 'left top',
+      backgroundRepeat: 'repeat-x',
+    };
     if (this.state.showSettings) {
       return this.renderSettings();
     }
     return (
-      <Grid container spacing={3}>
-        <Grid item xs={12} align="center">
-          <Typography variant="h4" component="h4">
-            Code: {this.roomCode}
-          </Typography>
+      <div style={backgroundAlbum}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} align="center">
+            <Typography variant="h4" component="h4" style={{color:'white'}}>
+              Code: {this.roomCode}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <MusicPlayer {...this.state.song} />
+          </Grid>
+          {this.state.isHost ? this.renderSettingsButton() : null}
+          <Grid item xs={12} align="center">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.leaveButtonPressed}
+            >
+              Leave Room
+            </Button>
+          </Grid>
         </Grid>
-        <MusicPlayer {...this.state.song} />
-        {this.state.isHost ? this.renderSettingsButton() : null}
-        <Grid item xs={12} align="center">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={this.leaveButtonPressed}
-          >
-            Leave Room
-          </Button>
-        </Grid>
-      </Grid>
+      </div>
     );
   }
 }
