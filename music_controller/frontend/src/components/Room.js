@@ -147,6 +147,8 @@ export default class Room extends Component {
       backgroundSize: 'cover', 
       backgroundPosition: 'left top',
       backgroundRepeat: 'repeat-x',
+      height: '100vh',
+      width: '100vw',
     };
     if (this.state.showSettings) {
       return this.renderSettings();
