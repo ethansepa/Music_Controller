@@ -54,14 +54,14 @@ export default class MusicPlayer extends Component {
     return (
         <Card>
           <Grid container alignItems="center">
-            <Grid item align="center" xs={4}>
+            <Grid item align="left" xs={4}>
               <img src={this.props.image_url} height="100%" width="100%" />
             </Grid>
             <Grid item align="center" xs={8}>
-              <Typography component="h5" variant="h5">
+              <Typography component="h2" variant="h2">
                 {this.props.title}
               </Typography>
-              <Typography color="textSecondary" variant="subtitle1">
+              <Typography color="textSecondary" variant="h4">
                 {this.props.artist}
               </Typography>
               <div>

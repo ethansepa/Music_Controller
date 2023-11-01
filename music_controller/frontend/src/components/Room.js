@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Button, Typography, Box } from "@material-ui/core";
+import { Grid, Button, Typography, List, Card } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
 
@@ -13,7 +13,7 @@ export default class Room extends Component {
       showSettings: false,
       spotifyAuthenticated: false,
       song: {},
-      image_url: "",
+      queue: []
     };
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -23,11 +23,13 @@ export default class Room extends Component {
     this.getRoomDetails = this.getRoomDetails.bind(this);
     this.authenticateSpotify = this.authenticateSpotify.bind(this);
     this.getCurrentSong = this.getCurrentSong.bind(this);
+    this.getUserQueue = this.getUserQueue.bind(this);
+    this.getMusicData = this.getMusicData.bind(this);
     this.getRoomDetails();
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.getCurrentSong, 1000);
+    this.interval = setInterval(this.getMusicData, 1000);
   }
 
   componentWillUnmount() {
@@ -81,8 +83,58 @@ export default class Room extends Component {
       })
       .then((data) => {
         this.setState({ song: data});
-        this.setState({ image_url: data.image_url});
       });
+  }
+
+  getUserQueue() {
+    fetch("/spotify/queue")
+      .then((response) => {
+        if (!response.ok) {
+          return {};
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        this.setState({ queue: data});
+      });
+      
+  }
+
+  getMusicData() {
+    this.getCurrentSong();
+    this.getUserQueue();
+  }
+
+  renderQueue() {
+    const queue = this.state.queue
+    return(
+    <Grid item xs={3} align="center">
+      <List>
+        <Card>
+          <Typography component="h6" variant="h6" align="center">
+          Queue
+          </Typography>
+        </Card>
+        {queue.map(queue => 
+          <Card>
+            <Grid container alignItems="center">
+              <Grid item align="left" xs={4}>
+                <img src={queue.album_cover} height="100vh" width="100vw" />
+              </Grid>
+              <Grid item align="center" xs={8}>
+                <Typography component="h6" variant="h6">
+                  {queue.title}
+                </Typography>
+                <Typography color="textSecondary" variant="subtitle1">
+                  {queue.artist}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Card>
+        )}
+      </List>
+    </Grid>);
   }
 
   leaveButtonPressed() {
@@ -143,10 +195,9 @@ export default class Room extends Component {
 
   render() {
     const backgroundAlbum={
-      backgroundImage: `url('${this.state.image_url}')`,
+      backgroundImage: `url('${this.state.song.image_url}')`,
       backgroundSize: 'cover', 
-      backgroundPosition: 'left top',
-      backgroundRepeat: 'repeat-x',
+      backgroundPosition: 'center center',
       height: '100vh',
       width: '100vw',
     };
@@ -155,27 +206,28 @@ export default class Room extends Component {
     }
     return (
       <div style={backgroundAlbum}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} align="center">
-            <Typography variant="h4" component="h4" style={{color:'white'}}>
-              Code: {this.roomCode}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} align="center">
-            <MusicPlayer {...this.state.song} />
-          </Grid>
-          {this.state.isHost ? this.renderSettingsButton() : null}
-          <Grid item xs={12} align="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.leaveButtonPressed}
-            >
-              Leave Room
-            </Button>
-          </Grid>
+      <Grid container spacing={3} alignItems="center">
+        <Grid item xs={12} align="center">
+          <Typography variant="h4" component="h4" style={{color:'white'}}>
+            Code: {this.roomCode}
+          </Typography>
         </Grid>
-      </div>
-    );
+        <Grid item xs={3} />
+        <Grid item xs={6} align="center">
+          <MusicPlayer {...this.state.song} />
+        </Grid>
+        {this.state.queue.length > 0 ? this.renderQueue() : null}
+        {this.state.isHost ? this.renderSettingsButton() : null}
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.leaveButtonPressed}
+          >
+            Leave Room
+          </Button>
+        </Grid>
+      </Grid>       
+    </div>);
   }
 }

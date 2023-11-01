@@ -112,6 +112,46 @@ class CurrentSong(APIView):
             room.save(update_fields=['current_song'])
             votes = Vote.objects.filter(room=room).delete()
 
+class UserQueue(APIView):
+    def get(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        host = room.host
+        endpoint = "player/queue"
+        response = execute_spotify_api_request(host, endpoint)
+
+        if 'error' in response or 'queue' not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        queue = response.get('queue')
+        user_queue = []
+
+        for i, song in enumerate(queue):
+            if i >= 5:
+                # Only want to send over the first 5 songs in the queue
+                return Response(user_queue, status=status.HTTP_200_OK)
+            artist_string = ""
+            for j, artist in enumerate(song.get('artists')):
+                if j > 0:
+                    artist_string += ", "
+                name = artist.get('name')
+                artist_string += name
+            queue_song = {
+            'title': song.get('name'),
+            'artist': artist_string,
+            'album_cover': song.get('album').get('images')[0].get('url')
+            }
+            user_queue.append(queue_song)
+
+        print(user_queue)
+        print("BREAK BREAK BREAK BREAK BREAK")
+
+        return Response(user_queue, status=status.HTTP_200_OK)
+
 class PauseSong(APIView):
     def put(self, response, format=None):
         room_code = self.request.session.get('room_code')
