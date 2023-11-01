@@ -13,7 +13,7 @@ export default class Room extends Component {
       showSettings: false,
       spotifyAuthenticated: false,
       song: {},
-      queue: []
+      queue: [{'title': "", 'aritst': "", 'album_cover': ""}]
     };
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -116,22 +116,24 @@ export default class Room extends Component {
           Queue
           </Typography>
         </Card>
-        {queue.map(queue => 
+        {queue.map((s, index) => 
+          <li key={index}>{
           <Card>
             <Grid container alignItems="center">
-              <Grid item align="left" xs={4}>
-                <img src={queue.album_cover} height="100vh" width="100vw" />
-              </Grid>
+                <Grid item align="left" xs={4}>
+                  <img src={s.album_cover} height="100vh" width="100vw" />
+                </Grid>
               <Grid item align="center" xs={8}>
-                <Typography component="h6" variant="h6">
-                  {queue.title}
-                </Typography>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {queue.artist}
-                </Typography>
+                  <Typography component="h6" variant="h6">
+                    {s.title}
+                  </Typography>
+                  <Typography color="textSecondary" variant="subtitle1">
+                    {s.artist}
+                  </Typography>
               </Grid>
             </Grid>
-          </Card>
+          </Card>}
+          </li>
         )}
       </List>
     </Grid>);
@@ -200,34 +202,36 @@ export default class Room extends Component {
       backgroundPosition: 'center center',
       height: '100vh',
       width: '100vw',
-    };
+    };    
+
     if (this.state.showSettings) {
       return this.renderSettings();
     }
     return (
       <div style={backgroundAlbum}>
-      <Grid container spacing={3} alignItems="center">
-        <Grid item xs={12} align="center">
-          <Typography variant="h4" component="h4" style={{color:'white'}}>
-            Code: {this.roomCode}
-          </Typography>
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} align="center">
+            <Typography variant="h4" component="h4" style={{color:'white'}}>
+              Code: {this.roomCode}
+            </Typography>
+          </Grid>
+          <Grid item xs={3} />
+          <Grid item xs={6} align="center">
+            <MusicPlayer {...this.state.song} />
+          </Grid>
+          {this.state.queue.length > 0 ? this.renderQueue() : null}
+          {this.state.isHost ? this.renderSettingsButton() : null}
+          <Grid item xs={12} align="center">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.leaveButtonPressed}
+            >
+              Leave Room
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={3} />
-        <Grid item xs={6} align="center">
-          <MusicPlayer {...this.state.song} />
-        </Grid>
-        {this.state.queue.length > 0 ? this.renderQueue() : null}
-        {this.state.isHost ? this.renderSettingsButton() : null}
-        <Grid item xs={12} align="center">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={this.leaveButtonPressed}
-          >
-            Leave Room
-          </Button>
-        </Grid>
-      </Grid>       
-    </div>);
+        </div>
+    );
   }
 }

@@ -33,7 +33,7 @@ export default class HomePage extends Component {
 
   renderHomePage() {
     return (
-      <Grid container spacing={5}>
+      <Grid container spacing={5} alignItems="center">
         <Grid item xs={12} align="center">
           <Typography variant="h3" compact="h3">
             House Party
