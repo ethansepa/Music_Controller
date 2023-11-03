@@ -14,7 +14,6 @@ class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-
 class GetRoom(APIView):
     serializer_class = RoomSerializer
     lookup_url_kwarg = 'code'
@@ -63,20 +62,22 @@ class CreateRoomView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             guest_can_pause = serializer.data.get('guest_can_pause')
+            guest_can_add_song = serializer.data.get('guest_can_add_song')
             votes_to_skip = serializer.data.get('votes_to_skip')
             host = self.request.session.session_key
             queryset = Room.objects.filter(host=host)
             if queryset.exists():
                 room = queryset[0]
                 room.guest_can_pause = guest_can_pause
+                room.guest_can_add_song = guest_can_add_song
                 room.votes_to_skip = votes_to_skip
-                room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+                room.save(update_fields=['guest_can_pause', 'guest_can_add_song', 'votes_to_skip'])
                 self.request.session['room_code'] = room.code
                 return Response(RoomSerializer(room).data, 
                                 status=status.HTTP_200_OK)
             else:
                 room = Room(host=host, guest_can_pause=guest_can_pause,
-                            votes_to_skip=votes_to_skip)
+                            guest_can_add_song=guest_can_add_song, votes_to_skip=votes_to_skip)
                 room.save()
                 self.request.session['room_code'] = room.code
                 return Response(RoomSerializer(room).data, 
@@ -110,13 +111,14 @@ class LeaveRoom(APIView):
 class UpdateRoom(APIView):
     serializer_class = UpdateRoomSerializer
 
-    def patch(self, request, formate=None):
+    def patch(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
 
         serialzer = self.serializer_class(data=request.data)
         if serialzer.is_valid():
             guest_can_puase = serialzer.data.get('guest_can_pause')
+            guest_can_add_song = serialzer.data.get('guest_can_add_song')
             votes_to_skip = serialzer.data.get('votes_to_skip')
             code = serialzer.data.get('code')
 
@@ -132,8 +134,9 @@ class UpdateRoom(APIView):
                         status=status.HTTP_403_FORBIDDEN)
             
             room.guest_can_pause = guest_can_puase
+            room.guest_can_add_song = guest_can_add_song
             room.votes_to_skip = votes_to_skip
-            room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+            room.save(update_fields=['guest_can_pause', 'guest_can_add_song', 'votes_to_skip'])
             return Response(RoomSerializer(room).data, 
                             status=status.HTTP_200_OK)
 

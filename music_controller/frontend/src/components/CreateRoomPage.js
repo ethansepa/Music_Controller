@@ -9,6 +9,7 @@ export default class CreateRoomPage extends Component {
   static defaultProps = {
     votesToSkip: 2,
     guestCanPause: true,
+    guestCanAddSong: true,
     update: false,
     roomCode: null,
     updateCallback: () => {},
@@ -18,6 +19,7 @@ export default class CreateRoomPage extends Component {
     super(props);
     this.state = {
       guestCanPause: this.props.guestCanPause,
+      guestCanAddSong: this.props.guestCanAddSong,
       votesToSkip: this.props.votesToSkip,
       errorMsg: "",
       successMsg: "",
@@ -26,6 +28,7 @@ export default class CreateRoomPage extends Component {
     this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
     this.handleVotesChange = this.handleVotesChange.bind(this);
     this.handleGuestCanPauseChange = this.handleGuestCanPauseChange.bind(this);
+    this.handleGuestCanAddSongChange = this.handleGuestCanAddSongChange.bind(this);
     this.handleUpdateButtonPressed = this.handleUpdateButtonPressed.bind(this);
   }
 
@@ -41,6 +44,12 @@ export default class CreateRoomPage extends Component {
     });
   }
 
+  handleGuestCanAddSongChange(e) {
+    this.setState({
+      guestCanAddSong: e.target.value === "true" ? true : false,
+    });
+  }
+
   handleRoomButtonPressed() {
     const requestOptions = {
       method: "POST",
@@ -48,6 +57,7 @@ export default class CreateRoomPage extends Component {
       body: JSON.stringify({
         votes_to_skip: this.state.votesToSkip,
         guest_can_pause: this.state.guestCanPause,
+        guest_can_add_song: this.state.guestCanAddSong,
       }),
     };
     fetch("/api/create-room", requestOptions)
@@ -62,6 +72,7 @@ export default class CreateRoomPage extends Component {
       body: JSON.stringify({
         votes_to_skip: this.state.votesToSkip,
         guest_can_pause: this.state.guestCanPause,
+        guest_can_add_song: this.state.guestCanAddSong,
         code: this.props.roomCode,
       }),
     };
@@ -152,7 +163,7 @@ export default class CreateRoomPage extends Component {
         <Grid item xs={12} align="center">
           <FormControl component="fieldset">
             <FormHelperText>
-              Guest Control of Playback State
+              Guest Can Control Playback State
             </FormHelperText>
             <RadioGroup
               row
@@ -162,7 +173,32 @@ export default class CreateRoomPage extends Component {
               <FormControlLabel
                 value="true"
                 control={<Radio color="primary" />}
-                label="Play/Pause"
+                label="Control"
+                labelPlacement="bottom"
+              />
+              <FormControlLabel
+                value="false"
+                control={<Radio color="secondary" />}
+                label="No Control"
+                labelPlacement="bottom"
+              />
+            </RadioGroup>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12} align="center">
+          <FormControl component="fieldset">
+            <FormHelperText>
+              Guest Can Add Songs to Queue
+            </FormHelperText>
+            <RadioGroup
+              row
+              defaultValue={this.props.guestCanAddSong.toString()}
+              onChange={this.handleGuestCanAddSongChange}
+            >
+              <FormControlLabel
+                value="true"
+                control={<Radio color="primary" />}
+                label="Control"
                 labelPlacement="bottom"
               />
               <FormControlLabel

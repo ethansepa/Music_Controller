@@ -18,6 +18,11 @@ class Room(models.Model):
         max_length=8, default=generate_unique_code, unique=True) # Room Code
     host = models.CharField(max_length = 50, unique=True)
     guest_can_pause = models.BooleanField(null=False, default=False)
+    guest_can_add_song = models.BooleanField(null=False, default=False)
     votes_to_skip = models.IntegerField(null=False, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     current_song = models.CharField(max_length=50, null=True)
+
+class Search(models.Model):
+    code = models.CharField(max_length=8)
+    search = models.CharField(max_length = 50, null=True)

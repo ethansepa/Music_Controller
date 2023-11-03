@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Grid, Button, Typography, List, Card } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
+import SearchMusic from "./SearchMusic";
 
 export default class Room extends Component {
   constructor(props) {
@@ -9,8 +11,10 @@ export default class Room extends Component {
     this.state = {
       votesToSkip: 2,
       guestCanPause: false,
+      guestCanAddSong: false,
       isHost: false,
       showSettings: false,
+      showSearch: false,
       spotifyAuthenticated: false,
       song: {},
       queue: [{'title': "", 'aritst': "", 'album_cover': ""}]
@@ -18,8 +22,11 @@ export default class Room extends Component {
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
     this.updateShowSettings = this.updateShowSettings.bind(this);
+    this.updateShowSearch = this.updateShowSearch.bind(this);
     this.renderSettingsButton = this.renderSettingsButton.bind(this);
     this.renderSettings = this.renderSettings.bind(this);
+    this.renderSearchButton = this.renderSearchButton.bind(this);
+    this.renderSearch = this.renderSearch.bind(this);
     this.getRoomDetails = this.getRoomDetails.bind(this);
     this.authenticateSpotify = this.authenticateSpotify.bind(this);
     this.getCurrentSong = this.getCurrentSong.bind(this);
@@ -49,6 +56,7 @@ export default class Room extends Component {
         this.setState({
           votesToSkip: data.votes_to_skip,
           guestCanPause: data.guest_can_pause,
+          guestCanAddSong: data.guest_can_add_song,
           isHost: data.is_host,
         });
         if (this.state.isHost) {
@@ -98,7 +106,6 @@ export default class Room extends Component {
       .then((data) => {
         this.setState({ queue: data});
       });
-      
   }
 
   getMusicData() {
@@ -109,7 +116,7 @@ export default class Room extends Component {
   renderQueue() {
     const queue = this.state.queue
     return(
-    <Grid item xs={3} align="center">
+    <Grid item xs={12} align="center">
       <List>
         <Card>
           <Typography component="h6" variant="h6" align="center">
@@ -121,10 +128,10 @@ export default class Room extends Component {
           <Card>
             <Grid container alignItems="center">
                 <Grid item align="left" xs={4}>
-                  <img src={s.album_cover} height="100vh" width="100vw" />
+                  <img src={s.album_cover} height="80vh" width="80vw" />
                 </Grid>
               <Grid item align="center" xs={8}>
-                  <Typography component="h6" variant="h6">
+                  <Typography component="subtitle1" variant="subtitle1">
                     {s.title}
                   </Typography>
                   <Typography color="textSecondary" variant="subtitle1">
@@ -164,6 +171,7 @@ export default class Room extends Component {
             update={true}
             votesToSkip={this.state.votesToSkip}
             guestCanPause={this.state.guestCanPause}
+            guestCanAddSong={this.state.guestCanAddSong}
             roomCode={this.roomCode}
             updateCallback={this.getRoomDetails}
           />
@@ -195,6 +203,45 @@ export default class Room extends Component {
     );
   }
 
+  updateShowSearch(value) {
+    this.setState({
+      showSearch: value,
+    });
+  }
+
+  renderSearch() {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <SearchMusic code={this.roomCode} />
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.updateShowSearch(false)}
+          >
+            Close
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  renderSearchButton() {
+    return (
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.updateShowSearch(true)}
+        >
+          Search Music
+        </Button>
+      </Grid>
+    );
+  }
+
   render() {
     const backgroundAlbum={
       backgroundImage: `url('${this.state.song.image_url}')`,
@@ -207,31 +254,39 @@ export default class Room extends Component {
     if (this.state.showSettings) {
       return this.renderSettings();
     }
+    if (this.state.showSearch) {
+      return this.renderSearch();
+    }
     return (
       <div style={backgroundAlbum}>
         <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} align="center">
-            <Typography variant="h4" component="h4" style={{color:'white'}}>
-              Code: {this.roomCode}
-            </Typography>
-          </Grid>
-          <Grid item xs={3} />
-          <Grid item xs={6} align="center">
-            <MusicPlayer {...this.state.song} />
-          </Grid>
-          {this.state.queue.length > 0 ? this.renderQueue() : null}
-          {this.state.isHost ? this.renderSettingsButton() : null}
-          <Grid item xs={12} align="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.leaveButtonPressed}
-            >
-              Leave Room
-            </Button>
+          <Grid container xs={9} spacing={3} alignItems="center">
+            <Grid item xs={12} align="center">
+              <Typography variant="h4" component="h4" style={{color:'white'}}>
+                Code: {this.roomCode}
+              </Typography>
+            </Grid>
+            <Grid item xs={4} />
+            <Grid item xs={8} align="center">
+              <MusicPlayer {...this.state.song} />
+            </Grid>
+            {this.state.isHost ? this.renderSettingsButton() : null}
+            {this.state.isHost || this.state.guestCanAddSong ? this.renderSearchButton() : null}       
+            <Grid item xs={12} align="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.leaveButtonPressed}
+              >
+                Leave Room
+              </Button>
+            </Grid>
+            </Grid>
+          <Grid container xs={3} alignItems="center">
+            {this.state.queue.length > 0 ? this.renderQueue() : null}
           </Grid>
         </Grid>
-        </div>
+      </div>
     );
   }
 }
