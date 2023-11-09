@@ -131,7 +131,7 @@ export default class Room extends Component {
                   <img src={s.album_cover} height="80vh" width="80vw" />
                 </Grid>
               <Grid item align="center" xs={8}>
-                  <Typography component="subtitle1" variant="subtitle1">
+                  <Typography variant="subtitle1">
                     {s.title}
                   </Typography>
                   <Typography color="textSecondary" variant="subtitle1">
@@ -260,30 +260,32 @@ export default class Room extends Component {
     return (
       <div style={backgroundAlbum}>
         <Grid container spacing={3} alignItems="center">
-          <Grid container xs={9} spacing={3} alignItems="center">
-            <Grid item xs={12} align="center">
-              <Typography variant="h4" component="h4" style={{color:'white'}}>
-                Code: {this.roomCode}
-              </Typography>
+          <Grid item xs={12} align="center">
+            <Typography variant="h4" component="h4" style={{color:'white'}}>
+              Code: {this.roomCode}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Grid container spacing={3} alignItems="center">
+              <Grid item xs={3} />
+              <Grid item xs={6} align="center">
+                <MusicPlayer {...this.state.song} />
+              </Grid>
+              <Grid item xs={3} align="center">
+                {this.state.queue.length > 0 ? this.renderQueue() : null}
+              </Grid>
             </Grid>
-            <Grid item xs={4} />
-            <Grid item xs={8} align="center">
-              <MusicPlayer {...this.state.song} />
-            </Grid>
-            {this.state.isHost ? this.renderSettingsButton() : null}
-            {this.state.isHost || this.state.guestCanAddSong ? this.renderSearchButton() : null}       
-            <Grid item xs={12} align="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={this.leaveButtonPressed}
-              >
-                Leave Room
-              </Button>
-            </Grid>
-            </Grid>
-          <Grid container xs={3} alignItems="center">
-            {this.state.queue.length > 0 ? this.renderQueue() : null}
+          </Grid>
+          {this.state.isHost ? this.renderSettingsButton() : null}
+          {this.state.isHost || this.state.guestCanAddSong ? this.renderSearchButton() : null}       
+          <Grid item xs={12} align="center">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.leaveButtonPressed}
+            >
+              Leave Room
+            </Button>
           </Grid>
         </Grid>
       </div>
