@@ -24,4 +24,10 @@ class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Search
         fields = ('code', 'search')
+
+class QueueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Search
+        fields = ('code', 'uri')
+
     

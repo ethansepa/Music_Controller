@@ -5,8 +5,8 @@ from requests import Request, post
 from rest_framework import status
 from rest_framework.response import Response
 from .util import *
-from api.models import Room, Search
-from api.serializers import SearchSerializer
+from api.models import Room
+from api.serializers import SearchSerializer, QueueSerializer
 from .models import Vote
 
 
@@ -178,7 +178,7 @@ class SkipSong(APIView):
         room = Room.objects.filter(code=room_code)[0]
         votes = Vote.objects.filter(room=room, song_id=room.current_song)
         votes_to_skip = room.votes_to_skip
-
+        #TODO:This check if user already voted should maybe be in the else case
         if self.request.session.session_key == room.host or (len(votes) + 1 >= votes_to_skip and len(Vote.objects.filter(user=self.request.session.session_key, 
                         room=room, song_id=room.current_song)) == 0):
             votes.delete()
@@ -197,20 +197,43 @@ class PreviousSong(APIView):
 
         if self.request.session.session_key == room.host:
             previous_song(room.host)
+            return Response({}, status=status.HTTP_204_NO_CONTENT)     
 
         return Response({}, status.HTTP_403_FORBIDDEN)
-
-class SearchSong(APIView): 
-    print("Check 1")
-    serializer_class = SearchSerializer
+    
+    
+class QueueSong(APIView):
+    serializer_class = QueueSerializer
 
     def post(self, request, format=None):
-        print("Check 2")
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
 
         serializer = self.serializer_class(data=request.data)
-        print("Check 3")
+        if serializer.is_valid():
+            code = serializer.data.get('code')
+            uri = serializer.data.get('uri')
+            room = Room.objects.filter(code=code)
+            if room.exists():
+                room = room[0]
+            else:
+                return Response({'Bad Request' : 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+            if self.request.session.session_key == room.host or room.guest_can_add_song == True:
+                queue_song(room.host, uri)
+                return Response({}, status=status.HTTP_204_NO_CONTENT)  
+            return Response({}, status.HTTP_403_FORBIDDEN)
+        
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+class SearchSong(APIView): 
+    serializer_class = SearchSerializer
+
+    def post(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             code = serializer.data.get('code')
             search = serializer.data.get('search')
@@ -220,40 +243,33 @@ class SearchSong(APIView):
             else:
                 return Response({'Bad Request' : 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
             
+            if self.request.session.session_key == room.host or room.guest_can_add_song == True:                        
+                response = execute_spotify_search_request(room.host, search)
+                if 'error' in response or 'tracks' not in response:
+                    return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-            if self.request.session.session_key != room.host and room.guest_can_add_song != True:
-                return Response({}, status.HTTP_202_ACCEPTED)
-        
-            print("THIS IS THE SEARCHED SONG: ")
-            print(search)
+                items = response.get('tracks').get('items')
+                songs = []
+
+                for item in items:
+                    artist_string = ""
+
+                    for i, artist in enumerate(item.get('artists')):
+                        if i > 0:
+                            artist_string += ", "
+                        name = artist.get('name')
+                        artist_string += name
+
+                    song = {
+                        'title': item.get('name'),
+                        'artist': artist_string,
+                        'album_cover': item.get('album').get('images')[0].get('url'),
+                        'uri': item.get('uri')
+                    }
+                    songs.append(song)
+
+                return Response(songs, status=status.HTTP_200_OK)
             
-            response = execute_spotify_search_request(room.host, search)
-            if 'error' in response or 'tracks' not in response:
-                return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-            items = response.get('tracks').get('items')
-            songs = []
-
-            for item in items:
-                album_cover = item.get('album').get('images')[0].get('url')
-                song_id = item.get('id')
-
-                artist_string = ""
-
-                for i, artist in enumerate(item.get('artists')):
-                    if i > 0:
-                        artist_string += ", "
-                    name = artist.get('name')
-                    artist_string += name
-
-                song = {
-                    'title': item.get('name'),
-                    'artist': artist_string,
-                    'album_cover': album_cover,
-                    'id': song_id
-                }
-                songs.append(song)
-
-            return Response(songs, status=status.HTTP_200_OK)
-        else:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({}, status.HTTP_403_FORBIDDEN)
+        
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)

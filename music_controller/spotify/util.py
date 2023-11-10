@@ -82,7 +82,6 @@ def execute_spotify_api_request(session_key, endpoint, post_=False, put_=False):
         return {'Error': 'Issue with request'}
     
 def execute_spotify_search_request(session_key, search=""):
-    print("Searched Song: " + search)
     tokens = get_user_tokens(session_key)
     headers = {'Content-Type': 'application/json',
                'Authorization': "Bearer " + tokens.access_token}
@@ -104,3 +103,6 @@ def skip_song(session_key):
 
 def previous_song(session_key):
     return execute_spotify_api_request(session_key, "player/previous", post_=True)
+
+def queue_song(session_key, uri):
+    return execute_spotify_api_request(session_key, "player/queue?uri=" + uri, post_=True)

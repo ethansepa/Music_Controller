@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { TextField, Button, Grid, Typography, List, Card} from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 export default class SearchMusic extends Component {
   constructor(props) {
@@ -9,11 +8,13 @@ export default class SearchMusic extends Component {
       search: "",
       error: false,
       errormsg: "",
-      searchedSongs: []
+      searchedSongs: [],
+      lastSearch: "",
     };
     this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
     this.searchButtonPressed = this.searchButtonPressed.bind(this);
-    this.renderSearch = this.renderSearch.bind(this)
+    this.renderSearch = this.renderSearch.bind(this);
+    this.addToQueueButtonPressed = this.addToQueueButtonPressed.bind(this);
   }
 
   handleTextFieldChange(e) {
@@ -22,7 +23,23 @@ export default class SearchMusic extends Component {
     });
   }
 
+  addToQueueButtonPressed(uri) {
+    const requestOptions = {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        code: this.props.code,
+        uri: uri,
+      }),
+    };
+    
+    fetch("../spotify/add-to-queue", requestOptions);
+  }
+
   searchButtonPressed() {
+    this.setState({
+      lastSearch: this.state.search,
+    });
     const requestOptions = {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -42,7 +59,7 @@ export default class SearchMusic extends Component {
         }
       })
       .then((data) => {
-        this.setState({ searchedSongs: data});
+        this.setState({searchedSongs: data});
       });
   }
 
@@ -54,17 +71,17 @@ export default class SearchMusic extends Component {
       <List>
         <Card>
           <Typography component="h6" variant="h6" align="center">
-          Search for {this.state.search}
+          Search for {this.state.lastSearch}
           </Typography>
         </Card>
         {searchedSongs.map((s, index) => 
           <li key={index}>{
           <Card>
             <Grid container alignItems="center">
-                <Grid item align="left" xs={4}>
-                  <img src={s.album_cover} height="100vh" width="100vw" />
-                </Grid>
-              <Grid item align="center" xs={8}>
+              <Grid item align="left" xs={4}>
+                <img src={s.album_cover} height="100vh" width="100vw" />
+              </Grid>
+              <Grid item align="center" xs={6}>
                   <Typography component="h6" variant="h6">
                     {s.title}
                   </Typography>
@@ -72,8 +89,20 @@ export default class SearchMusic extends Component {
                     {s.artist}
                   </Typography>
               </Grid>
+              <Grid item xs={2} align="center">
+                <Button
+                  variant="contained"
+                  color="default"
+                  onClick={() => {
+                    this.addToQueueButtonPressed(s.uri);
+                  }}
+                >
+                  Add to Queue
+                </Button>
+              </Grid>
             </Grid>
-          </Card>}
+          </Card>
+          }
           </li>
         )}
       </List>

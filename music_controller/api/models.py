@@ -26,3 +26,4 @@ class Room(models.Model):
 class Search(models.Model):
     code = models.CharField(max_length=8)
     search = models.CharField(max_length = 50, null=True)
+    uri = models.CharField(max_length=50, null=True)
