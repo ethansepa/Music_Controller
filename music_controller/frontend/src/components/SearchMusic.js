@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextField, Button, Grid, Typography, List, Card} from "@material-ui/core";
+import { TextField, Button, Grid, Typography, List, Card} from "@mui/material";
 
 export default class SearchMusic extends Component {
   constructor(props) {

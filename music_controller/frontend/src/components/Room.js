@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Button, Typography, List, Card } from "@material-ui/core";
+import { Grid, Button, Typography, List, Card } from "@mui/material";
 import { Link } from "react-router-dom";
+import { withRouter } from "../../withRouter";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
 import SearchMusic from "./SearchMusic";
 
-export default class Room extends Component {
+class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +20,7 @@ export default class Room extends Component {
       song: {},
       queue: [{'title': "", 'aritst': "", 'album_cover': ""}]
     };
-    this.roomCode = this.props.match.params.roomCode;
+    this.roomCode = window.location.href.split('/')[4];
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
     this.updateShowSettings = this.updateShowSettings.bind(this);
     this.updateShowSearch = this.updateShowSearch.bind(this);
@@ -48,7 +49,7 @@ export default class Room extends Component {
       .then((response) => {
         if (!response.ok) {
           this.props.leaveRoomCallback();
-          this.props.history.push("/");
+          this.props.navigate("/");
         }
         return response.json();
       })
@@ -59,7 +60,7 @@ export default class Room extends Component {
           guestCanAddSong: data.guest_can_add_song,
           isHost: data.is_host,
         });
-        if (this.state.isHost) {
+        if (data.is_host) {
           this.authenticateSpotify();
         }
       });
@@ -153,7 +154,7 @@ export default class Room extends Component {
     };
     fetch("/api/leave-room", requestOptions).then((_response) => {
       this.props.leaveRoomCallback();
-      this.props.history.push("/");
+      this.props.navigate("/");
     });
   }
 
@@ -292,3 +293,5 @@ export default class Room extends Component {
     );
   }
 }
+
+export default withRouter(Room);

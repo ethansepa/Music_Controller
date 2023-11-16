@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Button, Typography, IconButton } from "@material-ui/core";
-import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { Grid, Button, Typography, IconButton } from "@mui/material";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Link } from "react-router-dom";
 
 const pages = {

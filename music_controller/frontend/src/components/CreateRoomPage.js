@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Button, Grid, Typography, TextField, FormHelperText, FormControl, 
-  Radio, RadioGroup, FormControlLabel } from "@material-ui/core"; 
+  Radio, RadioGroup, FormControlLabel, } from "@mui/material"; 
 import { Link } from "react-router-dom";
-import { Collapse } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { withRouter } from "../../withRouter";
+import { Collapse } from "@mui/material";
+import { Alert } from "@mui/material";
 
-export default class CreateRoomPage extends Component {
+class CreateRoomPage extends Component {
   static defaultProps = {
     votesToSkip: 2,
     guestCanPause: true,
@@ -62,7 +63,7 @@ export default class CreateRoomPage extends Component {
     };
     fetch("/api/create-room", requestOptions)
       .then((response) => response.json())
-      .then((data) => this.props.history.push("/room/" + data.code));
+      .then((data) => this.props.navigate("/room/" + data.code));
   }
 
   handleUpdateButtonPressed() {
@@ -234,3 +235,5 @@ export default class CreateRoomPage extends Component {
     );
   }
 }
+
+export default withRouter(CreateRoomPage);

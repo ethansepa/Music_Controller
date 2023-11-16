@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import RoomJoinPage from "./RoomJoinPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
-import { Grid, Button, ButtonGroup, Typography } from "@material-ui/core";
+import { Button, Grid, ButtonGroup, Typography } from "@mui/material";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link,
-  Redirect,
+  Navigate,
 } from "react-router-dom";
 import Info from "./Info";
 
@@ -35,23 +35,23 @@ export default class HomePage extends Component {
     return (
       <Grid container spacing={5} alignItems="center">
         <Grid item xs={12} align="center">
-          <Typography variant="h3" compact="h3">
+          <Typography variant="h3">
             House Party
           </Typography>
         </Grid>
         <Grid item xs={12} align="center">
           <ButtonGroup disableElevation variant="contained" color="primary">
-            <Button color="primary" to="/join" component={Link}>
+            <Button color="primary" component={Link} to="/join">
               Join a Room
             </Button>
-            <Button color="secondary" to="/create" component={Link}>
+            <Button color="secondary" component={Link} to="/create">
               Create a Room
             </Button>
           </ButtonGroup>
         </Grid>
         <Grid item xs={12} align="end">
-          <Button variant="outlined" color="default" to="/info" component={Link}>
-              Info
+          <Button variant="outlined" color="secondary" component={Link} to="/info">
+            Info
           </Button>
         </Grid>
       </Grid>
@@ -67,29 +67,41 @@ export default class HomePage extends Component {
   render() {
     return (
       <Router>
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => {
-              return this.state.roomCode ? (
-                <Redirect to={`/room/${this.state.roomCode}`} />
-              ) : (
-                this.renderHomePage()
-              );
-            }}
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              this.state.roomCode ? (
+              <Navigate to={`/room/${this.state.roomCode}`} />
+              ) : (this.renderHomePage())
+              }
           />
-          <Route path="/join" component={RoomJoinPage} />
-          <Route path="/create" component={CreateRoomPage} />
-          <Route path="/info" component={Info} />
+          <Route path="/join" element={<RoomJoinPage />} />
+          <Route path="/create" element={<CreateRoomPage />} />
+          <Route path="/info" element={<Info />} />
           <Route
             path="/room/:roomCode"
-            render={(props) => {
-              return <Room {...props} leaveRoomCallback={this.clearRoomCode} />;
-            }}
+            element={<Room leaveRoomCallback={this.clearRoomCode} />}
           />
-        </Switch>
+        </Routes>
       </Router>
     );
   }
 }
+
+/*
+<Grid item xs={12} align="center">
+          <ButtonGroup disableElevation variant="contained" color="primary">
+            <Button color="primary" component={Link} to="/join">
+              Join a Room
+            </Button>
+            <Button color="secondary" component={Link} to="/create">
+              Create a Room
+            </Button>
+          </ButtonGroup>
+        </Grid>
+        <Grid item xs={12} align="end">
+          <Button variant="outlined" color="default" component={Link} to="/info">
+            Info
+          </Button>
+        </Grid>*/

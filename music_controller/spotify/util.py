@@ -11,6 +11,8 @@ SEARCH_URL = "https://api.spotify.com/v1/search"
 
 def get_user_tokens(session_key):
     user_tokens = SpotifyToken.objects.filter(user=session_key)
+    print("USER TOKENS: ")
+    print(user_tokens)
 
     if user_tokens.exists():
         return user_tokens[0]
