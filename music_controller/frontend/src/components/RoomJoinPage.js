@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { TextField, Button, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { withRouter } from "../../withRouter";
 
-export default class RoomJoinPage extends Component {
+class RoomJoinPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,7 +69,7 @@ export default class RoomJoinPage extends Component {
     };
     fetch('/api/join-room', requestOptions).then((respose) => {
       if(respose.ok) {
-        this.props.history.push(`/room/${this.state.roomCode}`);
+        this.props.navigate(`/room/${this.state.roomCode}`);
       } else {
         this.setState({error: true, errormsg: "Room not found."});
       }
@@ -78,3 +79,5 @@ export default class RoomJoinPage extends Component {
     });
   }
 }
+
+export default withRouter(RoomJoinPage);
