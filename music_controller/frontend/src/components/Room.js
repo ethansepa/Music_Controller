@@ -16,8 +16,8 @@ class Room extends Component {
       showSettings: false,
       showSearch: false,
       spotifyAuthenticated: false,
-      song: {},
-      queue: [{'title': "", 'aritst': "", 'album_cover': ""}]
+      song: {'title': "Play a Song on Spotify", 'aritst': "", 'image_url': "https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5eSaf4-qMMZdwEDKI5VEmKAXfzOqbiaeAsqqrEBCTdIEs"},
+      queue: []
     };
     this.roomCode = window.location.href.split('/')[4];
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -82,30 +82,19 @@ class Room extends Component {
 
   getCurrentSong() {
     fetch("/spotify/current-song")
-      .then((response) => {
-        if (!response.ok) {
-          return {};
-        } else {
-          return response.json();
-        }
-      })
+    .then((response) => response.json())
       .then((data) => {
-        this.setState({ song: data});
+        if(data.length != 0) {
+          this.setState({ song: data});
+        }
       });
   }
 
   getUserQueue() {
-    fetch("/spotify/queue")
-      .then((response) => {
-        if (!response.ok) {
-          return {};
-        } else {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        this.setState({ queue: data});
-      });
+    fetch("/spotify/queue").then((response) => response.json())
+    .then((data) => {
+          this.setState({ queue: data});
+    });
   }
 
   getMusicData() {

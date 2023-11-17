@@ -103,7 +103,7 @@ export default class SearchMusic extends Component {
           <List>
             <Card>
               <Typography component="h6" variant="h6" align="center">
-              Search for {this.state.lastSearch}
+                Search for "{this.state.lastSearch}"
               </Typography>
             </Card>
             {searchedSongs.map((s, index) => 
@@ -174,7 +174,7 @@ export default class SearchMusic extends Component {
               </Alert>
             )}
         </Collapse>
-        <Grid item xs={9} align="center">
+        <Grid item xs={12} align="center">
           <TextField
             errormsg={this.state.errormsg}
             error={this.state.error}
@@ -186,7 +186,7 @@ export default class SearchMusic extends Component {
             onChange={this.handleTextFieldChange}
           />
         </Grid>
-        <Grid item xs={3} align="center">
+        <Grid item xs={12} align="center">
           <Button
             variant="contained"
             color="primary"
