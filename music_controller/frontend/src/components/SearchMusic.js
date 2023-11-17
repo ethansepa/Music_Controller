@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { TextField, Button, Grid, Typography, List, Card} from "@mui/material";
+import {  TextField, Button, Grid, Typography, 
+          List, Card, Collapse, Alert} from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { blueGrey, lightBlue } from '@mui/material/colors';
 
@@ -9,7 +10,8 @@ export default class SearchMusic extends Component {
     this.state = {
       search: "",
       error: false,
-      errormsg: "",
+      errorMsg: "",
+      successMsg: "",
       searchedSongs: [],
       lastSearch: "",
     };
@@ -35,7 +37,17 @@ export default class SearchMusic extends Component {
       }),
     };
     
-    fetch("../spotify/add-to-queue", requestOptions);
+    fetch("../spotify/add-to-queue", requestOptions).then((response) => {
+      if (response.ok) {
+        this.setState({
+          successMsg: "Song added to queue!",
+        });
+      } else {
+        this.setState({
+          errorMsg: "Error adding song to queue...",
+        });
+      }
+    });
   }
 
   searchButtonPressed() {
@@ -54,14 +66,21 @@ export default class SearchMusic extends Component {
     
     fetch("../spotify/search", requestOptions)
       .then((response) => {
-        if (!response.ok) {
-          return {};
-        } else {
+        if (response.ok) {
           return response.json();
+        } else {
+          this.setState({
+            errorMsg: "Song not found.",
+          });
+          return {};
         }
-      })
-      .then((data) => {
+      }).then((data) => {
         this.setState({searchedSongs: data});
+        if(data.length == 0) {
+          this.setState({
+            errorMsg: "Song not found.",
+          });
+        }
       });
   }
 
@@ -132,6 +151,29 @@ export default class SearchMusic extends Component {
             Search Music
           </Typography>
         </Grid>
+        <Collapse
+            in={this.state.errorMsg != "" || this.state.successMsg != ""}
+          >
+            {this.state.successMsg != "" ? (
+              <Alert
+                severity="success"
+                onClose={() => {
+                  this.setState({ successMsg: "" });
+                }}
+              >
+                {this.state.successMsg}
+              </Alert>
+            ) : (
+              <Alert
+                severity="error"
+                onClose={() => {
+                  this.setState({ errorMsg: "" });
+                }}
+              >
+                {this.state.errorMsg}
+              </Alert>
+            )}
+        </Collapse>
         <Grid item xs={9} align="center">
           <TextField
             errormsg={this.state.errormsg}

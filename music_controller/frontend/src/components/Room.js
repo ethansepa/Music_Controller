@@ -261,7 +261,7 @@ class Room extends Component {
       <div style={backgroundAlbum}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} align="center">
-            <Typography variant="h4" component="h4" style={{color:'white'}}>
+            <Typography variant="h4" component="h4" color='primary'>
               Code: {this.roomCode}
             </Typography>
           </Grid>
