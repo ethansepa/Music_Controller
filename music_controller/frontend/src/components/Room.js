@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Grid, Button, Typography, List, Card } from "@mui/material";
-import { Link } from "react-router-dom";
 import { withRouter } from "../../withRouter";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
@@ -212,20 +211,20 @@ class Room extends Component {
 
   renderSearch() {
     return (
-      <Grid container spacing={1}>
-        <Grid item xs={12} align="center">
-          <SearchMusic code={this.roomCode} />
+        <Grid container spacing={1}>
+          <Grid item xs={12} align="center">
+            <SearchMusic code={this.roomCode} />
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => this.updateShowSearch(false)}
+            >
+              Close
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12} align="center">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => this.updateShowSearch(false)}
-          >
-            Close
-          </Button>
-        </Grid>
-      </Grid>
     );
   }
 

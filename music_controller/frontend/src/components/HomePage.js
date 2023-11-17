@@ -41,16 +41,16 @@ export default class HomePage extends Component {
         </Grid>
         <Grid item xs={12} align="center">
           <ButtonGroup disableElevation variant="contained" color="primary">
-            <Button color="primary" component={Link} to="/join">
+            <Button color="secondary" component={Link} to="/join">
               Join a Room
             </Button>
-            <Button color="secondary" component={Link} to="/create">
+            <Button color="primary" component={Link} to="/create">
               Create a Room
             </Button>
           </ButtonGroup>
         </Grid>
         <Grid item xs={12} align="end">
-          <Button variant="outlined" color="secondary" component={Link} to="/info">
+          <Button variant="outlined" color="info" component={Link} to="/info">
             Info
           </Button>
         </Grid>
@@ -88,20 +88,3 @@ export default class HomePage extends Component {
     );
   }
 }
-
-/*
-<Grid item xs={12} align="center">
-          <ButtonGroup disableElevation variant="contained" color="primary">
-            <Button color="primary" component={Link} to="/join">
-              Join a Room
-            </Button>
-            <Button color="secondary" component={Link} to="/create">
-              Create a Room
-            </Button>
-          </ButtonGroup>
-        </Grid>
-        <Grid item xs={12} align="end">
-          <Button variant="outlined" color="default" component={Link} to="/info">
-            Info
-          </Button>
-        </Grid>*/

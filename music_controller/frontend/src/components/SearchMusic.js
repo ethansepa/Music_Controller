@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { TextField, Button, Grid, Typography, List, Card} from "@mui/material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { blueGrey, lightBlue } from '@mui/material/colors';
 
 export default class SearchMusic extends Component {
   constructor(props) {
@@ -65,48 +67,61 @@ export default class SearchMusic extends Component {
 
 
   renderSearch() {
-    const searchedSongs = this.state.searchedSongs
+    const searchedSongs = this.state.searchedSongs;
+    const alt = createTheme({
+      palette: {
+        grey: {
+          main: blueGrey[200],
+          dark: lightBlue[200],
+          contrastText: '#242105',
+        },
+      },
+    });
+
     return(
-    <Grid item xs={12} align="center">
-      <List>
-        <Card>
-          <Typography component="h6" variant="h6" align="center">
-          Search for {this.state.lastSearch}
-          </Typography>
-        </Card>
-        {searchedSongs.map((s, index) => 
-          <li key={index}>{
-          <Card>
-            <Grid container alignItems="center">
-              <Grid item align="left" xs={4}>
-                <img src={s.album_cover} height="100vh" width="100vw" />
-              </Grid>
-              <Grid item align="center" xs={6}>
-                  <Typography component="h6" variant="h6">
-                    {s.title}
-                  </Typography>
-                  <Typography color="textSecondary" variant="subtitle1">
-                    {s.artist}
-                  </Typography>
-              </Grid>
-              <Grid item xs={2} align="center">
-                <Button
-                  variant="contained"
-                  color="default"
-                  onClick={() => {
-                    this.addToQueueButtonPressed(s.uri);
-                  }}
-                >
-                  Add to Queue
-                </Button>
-              </Grid>
-            </Grid>
-          </Card>
-          }
-          </li>
-        )}
-      </List>
-    </Grid>);
+      <ThemeProvider theme={alt}>
+        <Grid item xs={12} align="center">
+          <List>
+            <Card>
+              <Typography component="h6" variant="h6" align="center">
+              Search for {this.state.lastSearch}
+              </Typography>
+            </Card>
+            {searchedSongs.map((s, index) => 
+              <li key={index}>{
+              <Card>
+                <Grid container alignItems="center">
+                  <Grid item align="left" xs={4}>
+                    <img src={s.album_cover} height="100vh" width="100vw" />
+                  </Grid>
+                  <Grid item align="center" xs={6}>
+                      <Typography component="h6" variant="h6">
+                        {s.title}
+                      </Typography>
+                      <Typography color="textSecondary" variant="subtitle1">
+                        {s.artist}
+                      </Typography>
+                  </Grid>
+                  <Grid item xs={2} align="center">
+                    <Button
+                      variant="contained"
+                      color= "grey"
+                      onClick={() => {
+                        this.addToQueueButtonPressed(s.uri);
+                      }}
+                    >
+                      Add to Queue
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Card>
+              }
+              </li>
+            )}
+          </List>
+        </Grid>
+      </ThemeProvider>
+    );
   }
 
   render() {
