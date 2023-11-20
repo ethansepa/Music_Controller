@@ -21,11 +21,16 @@ module.exports = {
   optimization: {
     minimize: true,
   },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
   plugins: [
     new webpack.DefinePlugin({
       "process.env": {
         // This has effect on the react lib size
-        NODE_ENV: JSON.stringify("development"),
+        NODE_ENV: JSON.stringify("production"),
       },
     }),
   ],
