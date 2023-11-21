@@ -5,7 +5,7 @@ Interfaces with the Spotify API to control the music. <br>
 Allows multiple people to control the spotify playback state, vote to skip songs, and add songs to queue.
 
 ## Prerequisites
-- Room hosts must have a spotify premium acount.
+Room hosts must have a spotify premium acount.
 
 ## Run Using Docker Image
 
