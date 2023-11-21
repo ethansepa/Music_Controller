@@ -17,7 +17,7 @@ Room hosts must have a spotify premium acount.
 
 First pull the music controller image from Docker.
 ```bash
-docker pull ethansepa/music-controller 
+docker pull ethansepa/music-controller:music-controller
 ```
 
 Next run the image and publish port 8000.
