@@ -22,7 +22,7 @@ docker pull ethansepa/music-controller:music-controller
 
 Next run the image and publish port 8000.
 ```bash
-docker run --p 8000:8000 music-controller 
+docker run -p 8000:8000 ethansepa/music-controller:music-controller
 ```
 
 Open Docker. <br>
