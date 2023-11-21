@@ -1,13 +1,13 @@
 # Music_Controller
-Music Controller is a full stack web application for listening to music with friends.
-Utilizes Django and React frameworks.
-Interfaces with the Spotify API to control the music.
+Music Controller is a full stack web application for listening to music with friends. <br>
+Utilizes the Django and React frameworks. <br>
+Interfaces with the Spotify API to control the music. <br>
 Allows multiple people to control the spotify playback state, vote to skip songs, and add songs to queue.
 
 ## Prerequisites
 - Room hosts must have a spotify premium acount.
 
-## Run Using Docker
+## Run Using Docker Image
 
 ### Setup Instructions
 
@@ -25,8 +25,8 @@ Next run the image and publish port 8000.
 docker run --p 8000:8000 music-controller 
 ```
 
-Open Docker.
-Click on Container tab.
+Open Docker. <br>
+Click on Container tab. <br>
 Click on the Port of the Running ```music-controller``` Image.
 
 ## Run Using Code from GitHub
@@ -54,8 +54,7 @@ pip install -r requirements.txt
 
 #### Install Node Modules
 
-Open another Terminal.
-
+Open another Terminal. <br>
 First cd into the ```frontend``` folder.
 ```bash
 cd Music_Controller/music_controller/frontend
@@ -85,5 +84,5 @@ python3 manage.py runserver
 Open the web app ```(cmd + click)``` the link.
 
 ## Troubleshooting
-Make sure you have a Spotify Premium Account.
-If the Music Player is displaying the Default Card, open Spotify in another tab and start playing music.
+Make sure you have a Spotify Premium Account. <br>
+If the Music Controller is displaying the default spotify card, open Spotify in another tab and start playing music. The Music Controller will update with the current song.
