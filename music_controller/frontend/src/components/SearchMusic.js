@@ -151,29 +151,31 @@ export default class SearchMusic extends Component {
             Search Music
           </Typography>
         </Grid>
-        <Collapse
-            in={this.state.errorMsg != "" || this.state.successMsg != ""}
-          >
+        <Grid item xs={12} align="center">
+          <Collapse
+              in={this.state.errorMsg != "" || this.state.successMsg != ""}
+            >
             {this.state.successMsg != "" ? (
-              <Alert
-                severity="success"
-                onClose={() => {
-                  this.setState({ successMsg: "" });
-                }}
-              >
-                {this.state.successMsg}
-              </Alert>
+            <Alert
+              severity="success"
+              onClose={() => {
+                this.setState({ successMsg: "" });
+              }}
+            >
+              {this.state.successMsg}
+            </Alert>
             ) : (
-              <Alert
-                severity="error"
-                onClose={() => {
-                  this.setState({ errorMsg: "" });
-                }}
-              >
-                {this.state.errorMsg}
-              </Alert>
+            <Alert
+              severity="error"
+              onClose={() => {
+                this.setState({ errorMsg: "" });
+              }}
+            >
+              {this.state.errorMsg}
+            </Alert>
             )}
-        </Collapse>
+          </Collapse>
+        </Grid>
         <Grid item xs={12} align="center">
           <TextField
             errormsg={this.state.errormsg}
