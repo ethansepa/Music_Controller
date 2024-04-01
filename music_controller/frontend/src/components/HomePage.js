@@ -35,9 +35,7 @@ export default class HomePage extends Component {
     return (
       <Grid container spacing={5} alignItems="center">
         <Grid item xs={12} align="center">
-          <Typography variant="h3">
-            House Party
-          </Typography>
+          <Typography variant="h3">House Party</Typography>
         </Grid>
         <Grid item xs={12} align="center">
           <ButtonGroup disableElevation variant="contained" color="primary">
@@ -68,13 +66,15 @@ export default class HomePage extends Component {
     return (
       <Router>
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               this.state.roomCode ? (
-              <Navigate to={`/room/${this.state.roomCode}`} />
-              ) : (this.renderHomePage())
-              }
+                <Navigate to={`/room/${this.state.roomCode}`} />
+              ) : (
+                this.renderHomePage()
+              )
+            }
           />
           <Route path="/join" element={<RoomJoinPage />} />
           <Route path="/create" element={<CreateRoomPage />} />

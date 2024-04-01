@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import {  TextField, Button, Grid, Typography, 
-          List, Card, Collapse, Alert} from "@mui/material";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { blueGrey, lightBlue } from '@mui/material/colors';
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  List,
+  Card,
+  Collapse,
+  Alert,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { blueGrey, lightBlue } from "@mui/material/colors";
 
 export default class SearchMusic extends Component {
   constructor(props) {
@@ -30,13 +38,13 @@ export default class SearchMusic extends Component {
   addToQueueButtonPressed(uri) {
     const requestOptions = {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         code: this.props.code,
         uri: uri,
       }),
     };
-    
+
     fetch("../spotify/add-to-queue", requestOptions).then((response) => {
       if (response.ok) {
         this.setState({
@@ -56,14 +64,13 @@ export default class SearchMusic extends Component {
     });
     const requestOptions = {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         code: this.props.code,
         search: this.state.search,
-
       }),
     };
-    
+
     fetch("../spotify/search", requestOptions)
       .then((response) => {
         if (response.ok) {
@@ -74,16 +81,16 @@ export default class SearchMusic extends Component {
           });
           return {};
         }
-      }).then((data) => {
-        this.setState({searchedSongs: data});
-        if(data.length == 0) {
+      })
+      .then((data) => {
+        this.setState({ searchedSongs: data });
+        if (data.length == 0) {
           this.setState({
             errorMsg: "Song not found.",
           });
         }
       });
   }
-
 
   renderSearch() {
     const searchedSongs = this.state.searchedSongs;
@@ -92,12 +99,12 @@ export default class SearchMusic extends Component {
         grey: {
           main: blueGrey[200],
           dark: lightBlue[200],
-          contrastText: '#242105',
+          contrastText: "#242105",
         },
       },
     });
 
-    return(
+    return (
       <ThemeProvider theme={alt}>
         <Grid item xs={12} align="center">
           <List>
@@ -106,37 +113,38 @@ export default class SearchMusic extends Component {
                 Search for "{this.state.lastSearch}"
               </Typography>
             </Card>
-            {searchedSongs.map((s, index) => 
-              <li key={index}>{
-              <Card>
-                <Grid container alignItems="center">
-                  <Grid item align="left" xs={4}>
-                    <img src={s.album_cover} height="100vh" width="100vw" />
-                  </Grid>
-                  <Grid item align="center" xs={6}>
-                      <Typography component="h6" variant="h6">
-                        {s.title}
-                      </Typography>
-                      <Typography color="textSecondary" variant="subtitle1">
-                        {s.artist}
-                      </Typography>
-                  </Grid>
-                  <Grid item xs={2} align="center">
-                    <Button
-                      variant="contained"
-                      color= "grey"
-                      onClick={() => {
-                        this.addToQueueButtonPressed(s.uri);
-                      }}
-                    >
-                      Add to Queue
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Card>
-              }
+            {searchedSongs.map((s, index) => (
+              <li key={index}>
+                {
+                  <Card>
+                    <Grid container alignItems="center">
+                      <Grid item align="left" xs={4}>
+                        <img src={s.album_cover} height="100vh" width="100vw" />
+                      </Grid>
+                      <Grid item align="center" xs={6}>
+                        <Typography component="h6" variant="h6">
+                          {s.title}
+                        </Typography>
+                        <Typography color="textSecondary" variant="subtitle1">
+                          {s.artist}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2} align="center">
+                        <Button
+                          variant="contained"
+                          color="grey"
+                          onClick={() => {
+                            this.addToQueueButtonPressed(s.uri);
+                          }}
+                        >
+                          Add to Queue
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Card>
+                }
               </li>
-            )}
+            ))}
           </List>
         </Grid>
       </ThemeProvider>
@@ -153,26 +161,26 @@ export default class SearchMusic extends Component {
         </Grid>
         <Grid item xs={12} align="center">
           <Collapse
-              in={this.state.errorMsg != "" || this.state.successMsg != ""}
-            >
+            in={this.state.errorMsg != "" || this.state.successMsg != ""}
+          >
             {this.state.successMsg != "" ? (
-            <Alert
-              severity="success"
-              onClose={() => {
-                this.setState({ successMsg: "" });
-              }}
-            >
-              {this.state.successMsg}
-            </Alert>
+              <Alert
+                severity="success"
+                onClose={() => {
+                  this.setState({ successMsg: "" });
+                }}
+              >
+                {this.state.successMsg}
+              </Alert>
             ) : (
-            <Alert
-              severity="error"
-              onClose={() => {
-                this.setState({ errorMsg: "" });
-              }}
-            >
-              {this.state.errorMsg}
-            </Alert>
+              <Alert
+                severity="error"
+                onClose={() => {
+                  this.setState({ errorMsg: "" });
+                }}
+              >
+                {this.state.errorMsg}
+              </Alert>
             )}
           </Collapse>
         </Grid>

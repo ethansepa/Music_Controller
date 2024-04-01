@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { createRoot } from "react-dom/client";
 import HomePage from "./HomePage";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { lightBlue, blueGrey, blue, deepPurple } from '@mui/material/colors';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { lightBlue, blueGrey, blue, deepPurple } from "@mui/material/colors";
 
 export default class App extends Component {
   constructor(props) {

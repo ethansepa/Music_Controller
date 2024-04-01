@@ -9,7 +9,7 @@ import {
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious"
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 
 export default class MusicPlayer extends Component {
   constructor(props) {
@@ -52,38 +52,38 @@ export default class MusicPlayer extends Component {
     const songProgress = (this.props.time / this.props.duration) * 100;
 
     return (
-        <Card>
-          <Grid container alignItems="center">
-            <Grid item align="left" xs={4}>
-              <img src={this.props.image_url} height="100%" width="100%" />
-            </Grid>
-            <Grid item align="center" xs={8}>
-              <Typography component="h2" variant="h2">
-                {this.props.title}
-              </Typography>
-              <Typography color="textSecondary" variant="h4">
-                {this.props.artist}
-              </Typography>
-              <div>
-                <IconButton onClick={ () => this.previousSong()}>
-                  <SkipPreviousIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    this.props.is_playing ? this.pauseSong() : this.playSong();
-                  }}
-                >
-                  {this.props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
-                </IconButton>
-                <IconButton onClick={ () => this.skipSong()}> 
-                  {this.props.votes} / {this.props.votes_to_skip}
-                  <SkipNextIcon />
-                </IconButton>
-              </div>
-            </Grid>
+      <Card>
+        <Grid container alignItems="center">
+          <Grid item align="left" xs={4}>
+            <img src={this.props.image_url} height="100%" width="100%" />
           </Grid>
-          <LinearProgress variant="determinate" value={songProgress} />
-        </Card>
+          <Grid item align="center" xs={8}>
+            <Typography component="h2" variant="h2">
+              {this.props.title}
+            </Typography>
+            <Typography color="textSecondary" variant="h4">
+              {this.props.artist}
+            </Typography>
+            <div>
+              <IconButton onClick={() => this.previousSong()}>
+                <SkipPreviousIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  this.props.is_playing ? this.pauseSong() : this.playSong();
+                }}
+              >
+                {this.props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
+              </IconButton>
+              <IconButton onClick={() => this.skipSong()}>
+                {this.props.votes} / {this.props.votes_to_skip}
+                <SkipNextIcon />
+              </IconButton>
+            </div>
+          </Grid>
+        </Grid>
+        <LinearProgress variant="determinate" value={songProgress} />
+      </Card>
     );
   }
 }

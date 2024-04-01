@@ -16,10 +16,15 @@ class Room extends Component {
       showSettings: false,
       showSearch: false,
       spotifyAuthenticated: false,
-      song: {'title': "Play a Song on Spotify", 'aritst': "", 'image_url': "https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5eSaf4-qMMZdwEDKI5VEmKAXfzOqbiaeAsqqrEBCTdIEs"},
-      queue: []
+      song: {
+        title: "Play a Song on Spotify",
+        aritst: "",
+        image_url:
+          "https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5eSaf4-qMMZdwEDKI5VEmKAXfzOqbiaeAsqqrEBCTdIEs",
+      },
+      queue: [],
     };
-    this.roomCode = window.location.href.split('/')[4];
+    this.roomCode = window.location.href.split("/")[4];
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
     this.updateShowSettings = this.updateShowSettings.bind(this);
     this.updateShowSearch = this.updateShowSearch.bind(this);
@@ -82,19 +87,20 @@ class Room extends Component {
 
   getCurrentSong() {
     fetch("/spotify/current-song")
-    .then((response) => response.json())
+      .then((response) => response.json())
       .then((data) => {
-        if(data.length != 0) {
-          this.setState({ song: data});
+        if (data.length != 0) {
+          this.setState({ song: data });
         }
       });
   }
 
   getUserQueue() {
-    fetch("/spotify/queue").then((response) => response.json())
-    .then((data) => {
-          this.setState({ queue: data});
-    });
+    fetch("/spotify/queue")
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ queue: data });
+      });
   }
 
   getMusicData() {
@@ -103,36 +109,37 @@ class Room extends Component {
   }
 
   renderQueue() {
-    const queue = this.state.queue
-    return(
-    <Grid item xs={12} align="center">
-      <List>
-        <Card>
-          <Typography component="h6" variant="h6" align="center">
-          Queue
-          </Typography>
-        </Card>
-        {queue.map((s, index) => 
-          <li key={index}>{
+    const queue = this.state.queue;
+    return (
+      <Grid item xs={12} align="center">
+        <List>
           <Card>
-            <Grid container alignItems="center">
-                <Grid item align="left" xs={4}>
-                  <img src={s.album_cover} height="80vh" width="80vw" />
-                </Grid>
-              <Grid item align="center" xs={8}>
-                  <Typography variant="subtitle1">
-                    {s.title}
-                  </Typography>
-                  <Typography color="textSecondary" variant="subtitle1">
-                    {s.artist}
-                  </Typography>
-              </Grid>
-            </Grid>
-          </Card>}
-          </li>
-        )}
-      </List>
-    </Grid>);
+            <Typography component="h6" variant="h6" align="center">
+              Queue
+            </Typography>
+          </Card>
+          {queue.map((s, index) => (
+            <li key={index}>
+              {
+                <Card>
+                  <Grid container alignItems="center">
+                    <Grid item align="left" xs={4}>
+                      <img src={s.album_cover} height="80vh" width="80vw" />
+                    </Grid>
+                    <Grid item align="center" xs={8}>
+                      <Typography variant="subtitle1">{s.title}</Typography>
+                      <Typography color="textSecondary" variant="subtitle1">
+                        {s.artist}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Card>
+              }
+            </li>
+          ))}
+        </List>
+      </Grid>
+    );
   }
 
   leaveButtonPressed() {
@@ -200,20 +207,20 @@ class Room extends Component {
 
   renderSearch() {
     return (
-        <Grid container spacing={1}>
-          <Grid item xs={12} align="center">
-            <SearchMusic code={this.roomCode} />
-          </Grid>
-          <Grid item xs={12} align="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => this.updateShowSearch(false)}
-            >
-              Close
-            </Button>
-          </Grid>
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <SearchMusic code={this.roomCode} />
         </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.updateShowSearch(false)}
+          >
+            Close
+          </Button>
+        </Grid>
+      </Grid>
     );
   }
 
@@ -232,13 +239,13 @@ class Room extends Component {
   }
 
   render() {
-    const backgroundAlbum={
+    const backgroundAlbum = {
       backgroundImage: `url('${this.state.song.image_url}')`,
-      backgroundSize: 'cover', 
-      backgroundPosition: 'center center',
-      height: '100vh',
-      width: '100vw',
-    };    
+      backgroundSize: "cover",
+      backgroundPosition: "center center",
+      height: "100vh",
+      width: "100vw",
+    };
 
     if (this.state.showSettings) {
       return this.renderSettings();
@@ -250,7 +257,7 @@ class Room extends Component {
       <div style={backgroundAlbum}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} align="center">
-            <Typography variant="h4" component="h4" color='primary'>
+            <Typography variant="h4" component="h4" color="primary">
               Code: {this.roomCode}
             </Typography>
           </Grid>
@@ -266,7 +273,9 @@ class Room extends Component {
             </Grid>
           </Grid>
           {this.state.isHost ? this.renderSettingsButton() : null}
-          {this.state.isHost || this.state.guestCanAddSong ? this.renderSearchButton() : null}       
+          {this.state.isHost || this.state.guestCanAddSong
+            ? this.renderSearchButton()
+            : null}
           <Grid item xs={12} align="center">
             <Button
               variant="contained"

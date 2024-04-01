@@ -62,21 +62,22 @@ class RoomJoinPage extends Component {
   roomButtonPressed() {
     const requestOptions = {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        code: this.state.roomCode
-      })
+        code: this.state.roomCode,
+      }),
     };
-    fetch('/api/join-room', requestOptions).then((respose) => {
-      if(respose.ok) {
-        this.props.navigate(`/room/${this.state.roomCode}`);
-      } else {
-        this.setState({error: true, errormsg: "Room not found."});
-      }
-    })
-    .catch((error) => {
-      console.long(errormsg);
-    });
+    fetch("/api/join-room", requestOptions)
+      .then((respose) => {
+        if (respose.ok) {
+          this.props.navigate(`/room/${this.state.roomCode}`);
+        } else {
+          this.setState({ error: true, errormsg: "Room not found." });
+        }
+      })
+      .catch((error) => {
+        console.long(errormsg);
+      });
   }
 }
 

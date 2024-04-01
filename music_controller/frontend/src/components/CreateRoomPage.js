@@ -1,6 +1,15 @@
 import React, { Component } from "react";
-import { Button, Grid, Typography, TextField, FormHelperText, FormControl, 
-  Radio, RadioGroup, FormControlLabel, } from "@mui/material"; 
+import {
+  Button,
+  Grid,
+  Typography,
+  TextField,
+  FormHelperText,
+  FormControl,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { withRouter } from "../../withRouter";
 import { Collapse } from "@mui/material";
@@ -29,7 +38,8 @@ class CreateRoomPage extends Component {
     this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
     this.handleVotesChange = this.handleVotesChange.bind(this);
     this.handleGuestCanPauseChange = this.handleGuestCanPauseChange.bind(this);
-    this.handleGuestCanAddSongChange = this.handleGuestCanAddSongChange.bind(this);
+    this.handleGuestCanAddSongChange =
+      this.handleGuestCanAddSongChange.bind(this);
     this.handleUpdateButtonPressed = this.handleUpdateButtonPressed.bind(this);
   }
 
@@ -163,9 +173,7 @@ class CreateRoomPage extends Component {
         </Grid>
         <Grid item xs={12} align="center">
           <FormControl component="fieldset">
-            <FormHelperText>
-              Guest Can Control Playback State
-            </FormHelperText>
+            <FormHelperText>Guest Can Control Playback State</FormHelperText>
             <RadioGroup
               row
               defaultValue={this.props.guestCanPause.toString()}
@@ -184,13 +192,11 @@ class CreateRoomPage extends Component {
                 labelPlacement="bottom"
               />
             </RadioGroup>
-            </FormControl>
+          </FormControl>
         </Grid>
         <Grid item xs={12} align="center">
           <FormControl component="fieldset">
-            <FormHelperText>
-              Guest Can Add Songs to Queue
-            </FormHelperText>
+            <FormHelperText>Guest Can Add Songs to Queue</FormHelperText>
             <RadioGroup
               row
               defaultValue={this.props.guestCanAddSong.toString()}
@@ -223,9 +229,7 @@ class CreateRoomPage extends Component {
                 style: { textAlign: "center" },
               }}
             />
-            <FormHelperText>
-              Votes Required To Skip Song
-            </FormHelperText>
+            <FormHelperText>Votes Required To Skip Song</FormHelperText>
           </FormControl>
         </Grid>
         {this.props.update
